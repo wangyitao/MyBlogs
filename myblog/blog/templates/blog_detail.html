@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ blog.title }}</title>
+</head>
+<body>
+
+<a href="{% url 'home' %}">
+    <div>
+        <h3>felix Blog</h3>
+    </div>
+</a>
+<h3>{{ blog.title }}</h3>
+<p>{{ blog.content }}</p>
+</body>
+</html>

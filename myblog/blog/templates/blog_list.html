@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>felix Blog</title>
+</head>
+<body>
+<div>
+    <h3>felix Blog</h3>
+</div>
+<br/>
+{% for blog in blogs %}
+    <a href="{% url 'blog_detail' blog.pk %}"><h3>{{ blog.title }}</h3></a>
+    <p>{{ blog.content }}</p>
+{% endfor %}
+</body>
+</html>
