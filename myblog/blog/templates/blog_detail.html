@@ -12,6 +12,14 @@
     </div>
 </a>
 <h3>{{ blog.title }}</h3>
+<p>作者：{{ blog.author }}</p>
+{# 时间过滤器让时间按照自己需要的格式过滤 #}
+<p>发布日期：{{ blog.created_time|date:"Y-m-d H:n:s" }}</p>
+<p>分类：
+    <a href="{% url 'blogs_with_type' blog.blog_type.pk %}">
+        {{ blog.blog_type }}
+    </a>
+</p>
 <p>{{ blog.content }}</p>
 </body>
 </html>
