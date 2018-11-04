@@ -9,7 +9,7 @@ def blog_list(requests):
     context = {
         'blogs': Blog.objects.all()
     }
-    return render_to_response('blog_list.html', context)
+    return render_to_response('blog/blog_list.html', context)
 
 
 # 博客详情
@@ -18,7 +18,7 @@ def blog_detail(requests, blog_pk):
         'blog': get_object_or_404(Blog, pk=blog_pk)
     }
 
-    return render_to_response('blog_detail.html', context)
+    return render_to_response('blog/blog_detail.html', context)
 
 
 def blogs_with_type(requests, blog_type_pk):
@@ -27,4 +27,4 @@ def blogs_with_type(requests, blog_type_pk):
         'blogs': Blog.objects.filter(blog_type=blog_type),
         'blog_type':blog_type,
     }
-    return render_to_response('blog_with_type.html', context)
+    return render_to_response('blog/blog_with_type.html', context)

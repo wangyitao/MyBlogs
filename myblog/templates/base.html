@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {#  用来放标题  #}
+        {% block title %}
+
+        {% endblock %}
+    </title>
+</head>
+<body>
+<div>
+    <a href="{% url 'home' %}">
+        <h3>felix Blog</h3>
+    </a>
+
+</div>
+<hr/>
+{# 用来放内容 #}
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>
