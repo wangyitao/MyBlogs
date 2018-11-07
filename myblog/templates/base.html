@@ -4,32 +4,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- 根据屏幕自动响应布局 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>
         {#  用来放标题  #}
         {% block title %}
 
         {% endblock %}
     </title>
-    <link rel="stylesheet" href="{% static '/css/base.css' %}">
-    {#下面这种和上面这种效果一模一样，但是推荐使用上面这种#}
-    {#    <link rel="stylesheet" href="/static/css/base.css">#}
+    {# 加载css代码 #}
+    <link rel="stylesheet" href="{% static 'bootstrap4.1/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
     {% block header_extends %}
         {#    用来做头部扩展，如加载某些静态文件     #}
     {% endblock %}
 </head>
 <body>
-<div class="nav">
-    <a class="logo" href="{% url 'home' %}">
-        <h3>felix Blog</h3>
-    </a>
-    <a href="{% url 'home' %}">首页</a>
-    <a href="{% url 'blog_list' %}">博客</a>
-</div>
+
+{# 导航栏 #}
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a class="navbar-brand" href="{% url 'home' %}">Felix Blog</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item nav-home"><a href="{% url 'home' %}" class="nav-link">首页</a></li>
+            <li class="nav-item nav-blog"><a href="{% url 'blog_list' %}" class="nav-link">博客</a></li>
+        </ul>
+    </div>
+
+</nav>
+
 {# 用来放内容 #}
 {% block content %}
 
 {% endblock %}
+
+{# js代码放在后面可以增加性能 #}
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'bootstrap4.1/popper.min.js' %}"></script>
+<script src="{% static 'bootstrap4.1/bootstrap.min.js' %}"></script>
+
+{# 导入资源建议放在js代码前 #}
+{# 用来放js代码 #}
+{% block js %}
+
+{% endblock %}
+
 
 </body>
 </html>

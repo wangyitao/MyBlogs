@@ -1,4 +1,4 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
 {# 标题 #}
 {% block title %}
@@ -17,4 +17,11 @@
     {% endfor %}
     {# 过滤器统计博客数量 #}
     <p>一共有{{ blogs|length }}篇博客</p>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $(".nav-blog").addClass("active").siblings().removeClass("active");
+    </script>
 {% endblock %}

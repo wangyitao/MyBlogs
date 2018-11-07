@@ -14,3 +14,10 @@
 {% block content %}
     <h1 class="home-content">欢迎访问我的博客</h1>
 {% endblock %}
+
+{% block js %}
+    {# 将首页这个按钮设置激活状态 #}
+    <script>
+        $(".nav-home").addClass("active").siblings().removeClass("active");
+    </script>
+{% endblock %}

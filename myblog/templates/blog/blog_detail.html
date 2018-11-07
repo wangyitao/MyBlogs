@@ -1,5 +1,5 @@
 {# 引用模板 #}
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
 {# 标题 #}
 {% block title %}
@@ -18,4 +18,10 @@
         </a>
     </p>
     <p>{{ blog.content }}</p>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(".nav-blog").addClass("active").siblings().removeClass("active");
+    </script>
 {% endblock %}
