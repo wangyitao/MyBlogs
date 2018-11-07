@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,15 +10,22 @@
 
         {% endblock %}
     </title>
+    <link rel="stylesheet" href="{% static '/css/base.css' %}">
+    {#下面这种和上面这种效果一模一样，但是推荐使用上面这种#}
+    {#    <link rel="stylesheet" href="/static/css/base.css">#}
+
+    {% block header_extends %}
+        {#    用来做头部扩展，如加载某些静态文件     #}
+    {% endblock %}
 </head>
 <body>
-<div>
-    <a href="{% url 'home' %}">
+<div class="nav">
+    <a class="logo" href="{% url 'home' %}">
         <h3>felix Blog</h3>
     </a>
-
+    <a href="{% url 'home' %}">首页</a>
+    <a href="{% url 'blog_list' %}">博客</a>
 </div>
-<hr/>
 {# 用来放内容 #}
 {% block content %}
 
