@@ -23,3 +23,6 @@ class Blog(models.Model):
 
     def __str__(self):  # 显示标题名
         return "<Blog:{}>".format(self.title)
+
+    class Meta:
+        ordering = ['-created_time']  # 定义排序规则，按照创建时间倒序
