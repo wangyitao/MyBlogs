@@ -17,9 +17,9 @@
             <div class="col-md-8">
                 <div class="card" style="">
                     <div class="card-header"><h5 class="card-title">{% block blog_type_title %}博客列表（一共有
-                        {{ blogs|length }}篇博客）{% endblock %}</h5></div>
+                        {{ page_of_blogs.paginator.count }}篇博客）{% endblock %}</h5></div>
                     <div class="card-body">
-                        {% for blog in blogs %}
+                        {% for blog in page_of_blogs.object_list %}
                             <div class="blog">
                                 <h3><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
                                 <div class="blog-info">
@@ -41,6 +41,34 @@
                             </div>
                         {% endfor %}
                     </div>
+
+
+                    {# 分页 #}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {# 上一页 #}
+                            {% if page_of_blogs.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ page_of_blogs.previous_page_number }}">上一页</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">上一页</a></li>
+                            {% endif %}
+                            {# 全部页码 #}
+                            {% for page_num in page_of_blogs.paginator.page_range %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ page_num }}">{{ page_num }}</a></li>
+                            {% endfor %}
+                            {# 下一页 #}
+                            {% if page_of_blogs.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ page_of_blogs.next_page_number }}">下一页</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
                 </div>
             </div>
             <div class="col-md-4">
