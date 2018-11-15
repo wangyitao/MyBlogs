@@ -86,12 +86,29 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card" style="">
+                <div class="card">
                     <div class="card-header"><h5 class="card-title">博客分类</h5></div>
                     <div class="card-body">
                         <ul class="blog-types">
                             {% for blog_type in blog_types %}
                                 <li><a href="{% url 'blogs_with_type' blog_type.pk %}">{{ blog_type.type_name }}</a>
+                                </li>
+                            {% empty %}
+                                <li>暂无分类</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h5 class="card-title">日期归档</h5></div>
+                    <div class="card-body">
+                        <ul class="blog-dates">
+                            {% for blog_date in blog_dates %}
+                                <li>
+                                    <a href="{% url 'blogs_with_date' blog_date.year blog_date.month %}">
+                                        {{ blog_date|date:'Y年m月' }}
+                                    </a>
                                 </li>
                             {% empty %}
                                 <li>暂无分类</li>
