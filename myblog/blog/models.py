@@ -19,6 +19,7 @@ class Blog(models.Model):
     blog_type = models.ForeignKey(BlogType, on_delete=models.DO_NOTHING)  # 博客分类
     content = RichTextUploadingField()  # 博客内容，使用富文本编辑
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)  # 博客作者
+    read_num=models.IntegerField(default=0)
     created_time = models.DateTimeField(auto_now_add=True)  # 博客创建时间
     last_updated_time = models.DateTimeField(auto_now=True)  # 博客更新事件
 

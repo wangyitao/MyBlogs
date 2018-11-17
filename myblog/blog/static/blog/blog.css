@@ -15,6 +15,9 @@ div.blog h3 {
 div.blog-info p {
     margin-bottom: 0;
 }
+div.blog-info p span{
+    margin-right: 10px;
+}
 
 div.blog-info-description {
     list-style-type: none;
@@ -23,7 +26,7 @@ div.blog-info-description {
 
 ul.blog-info-description li {
     display: inline-block;
-    margin-right: 2em;
+    margin-right: 1em;
 }
 
 div.paginator {
