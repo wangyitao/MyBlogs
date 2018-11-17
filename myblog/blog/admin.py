@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BlogType, Blog
+from .models import BlogType, Blog, ReadNum
 
 
 # Register your models here.
@@ -11,7 +11,12 @@ class BlogTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ('title', 'blog_type', 'author','read_num', 'created_time', 'last_updated_time')
+    list_display = ('title', 'blog_type', 'author', 'get_read_num', 'created_time', 'last_updated_time')
+
 
 # 上面的装饰器和这句相同
-# admin.site.register(Blog,BlogAdmin)
+# admin.site.register(Blog,BlogAdmin)u
+
+@admin.register(ReadNum)
+class ReadNumAdmin(admin.ModelAdmin):
+    list_display = ('blog', 'read_num')
