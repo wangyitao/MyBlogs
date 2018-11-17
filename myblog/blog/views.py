@@ -1,8 +1,9 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from .models import Blog, BlogType, ReadNum
+from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models import Count
+from read_statistics.utils import read_statistics_once_read
 
 
 # 分页部分公共代码
@@ -71,15 +72,7 @@ def blogs_with_date(requests, year, month):
 # 博客详情
 def blog_detail(requests, blog_pk):
     blog = get_object_or_404(Blog, pk=blog_pk)
-    # 获取并处理阅读计数
-    if not requests.COOKIES.get('blog_{}_read'.format(blog_pk)):
-        if ReadNum.objects.filter(blog=blog).count():
-            readnum = ReadNum.objects.get(blog=blog)
-        else:
-            readnum = ReadNum(blog=blog)
-        # 处理阅读量
-        readnum.read_num += 1
-        readnum.save()
+    obj_key = read_statistics_once_read(requests, blog)
 
     context = {
         'blog': blog,
@@ -87,6 +80,6 @@ def blog_detail(requests, blog_pk):
         'next_blog': Blog.objects.filter(created_time__lt=blog.created_time).first(),
     }
     response = render_to_response('blog/blog_detail.html', context)
-    response.set_cookie('blog_{}_read'.format(blog_pk), 'true')
+    response.set_cookie(obj_key, 'true')
 
     return response
