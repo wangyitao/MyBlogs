@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from django.conf import settings
@@ -49,7 +49,7 @@ def blog_list_common_data(requests, blogs_all_list):
 def blog_list(requests):
     blogs_all_list = Blog.objects.all()  # 获取全部博客
     context = blog_list_common_data(requests, blogs_all_list)
-    return render_to_response('blog/blog_list.html', context)
+    return render(requests, 'blog/blog_list.html', context)
 
 
 # 根据类型筛选
@@ -58,7 +58,7 @@ def blogs_with_type(requests, blog_type_pk):
     blogs_all_list = Blog.objects.filter(blog_type=blog_type)  # 获取全部博客
     context = blog_list_common_data(requests, blogs_all_list)
     context['blog_type'] = blog_type
-    return render_to_response('blog/blog_with_type.html', context)
+    return render(requests, 'blog/blog_with_type.html', context)
 
 
 # 根据日期筛选
@@ -66,7 +66,7 @@ def blogs_with_date(requests, year, month):
     blogs_all_list = Blog.objects.filter(created_time__year=year, created_time__month=month)  # 获取全部博客
     context = blog_list_common_data(requests, blogs_all_list)
     context['blogs_with_date'] = '{}年{}日'.format(year, month)
-    return render_to_response('blog/blog_with_date.html', context)
+    return render(requests, 'blog/blog_with_date.html', context)
 
 
 # 博客详情
@@ -79,7 +79,7 @@ def blog_detail(requests, blog_pk):
         'previous_blog': Blog.objects.filter(created_time__gt=blog.created_time).last(),
         'next_blog': Blog.objects.filter(created_time__lt=blog.created_time).first(),
     }
-    response = render_to_response('blog/blog_detail.html', context)
+    response = render(requests, 'blog/blog_detail.html', context)
     response.set_cookie(obj_key, 'true')
 
     return response

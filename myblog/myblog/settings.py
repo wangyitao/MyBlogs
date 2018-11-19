@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'blog.apps.BlogConfig',  # 将自己创建的app添加到设置中
     'read_statistics.apps.ReadStatisticsConfig',  # 注册阅读统计app
+    'comment.apps.CommentConfig',  # 注册评论
 
 ]
 
@@ -146,7 +147,6 @@ CKEDITOR_UPLOAD_PATH = 'upload/'
 
 # 自定义参数
 EACH_PAGE_BLOGS_NUMBER = 7
-
 
 # 设置数据库缓存
 CACHES = {

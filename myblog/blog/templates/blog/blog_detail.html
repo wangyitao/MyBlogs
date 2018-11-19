@@ -34,7 +34,7 @@
 
                 <p>上一篇：
                     {% if previous_blog %}
-                       <a href="{% url 'blog_detail' previous_blog.pk %}">{{ previous_blog.title }}</a>
+                        <a href="{% url 'blog_detail' previous_blog.pk %}">{{ previous_blog.title }}</a>
                     {% else %}
                         <span>没有了</span>
                     {% endif %}
@@ -48,9 +48,26 @@
                 </p>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-6 offset-1">
+                <div style="margin-top: 2em;border: 1px dashed;padding: 2em">提交评论区域
+                    {% if user.is_authenticated %}
+                        已登录
+                    {% else %}
+                        未登录
+                        <form action="{% url 'login' %}" method="post">
+                            {% csrf_token %}
+                            <input type="text" name="username">
+                            <input type="password" name="password">
+                            <input type="submit" value="登录">
+                        </form>
+                    {% endif %}
+                </div>
+                <div style="margin-top: 2em;border: 1px dashed;padding: 2em">评论列表区域</div>
+            </div>
+        </div>
     </div>
-
-
 {% endblock %}
 
 {% block js %}

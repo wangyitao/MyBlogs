@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor', include('ckeditor_uploader.urls')),  # 配置上传url
     path('blog/', include('blog.urls')),  # 博客app路径
+    path('login/', views.login, name='login'),  # 登录
 ]
 
 # 设置ckeditor的上传

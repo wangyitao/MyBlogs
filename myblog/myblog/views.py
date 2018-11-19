@@ -2,8 +2,9 @@
 # @Time    : 18-11-7 下午4:12
 # @Author  : Felix Wang
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render, redirect
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import auth
 from read_statistics.utils import get_seven_days_read_data, get_x_days_hot_data
 from blog.models import Blog
 
@@ -20,4 +21,15 @@ def home(requests):
         'seven_days_hot_data': get_x_days_hot_data(7),  # 获取周热门
         'one_month_hot_data': get_x_days_hot_data(30),  # 获取月热门
     }
-    return render_to_response('home.html', context)
+    return render(requests, 'home.html', context)
+
+
+def login(requests):
+    username = requests.POST.get('username', '')
+    password = requests.POST.get('password', '')
+    user = auth.authenticate(requests, username=username, password=password)
+    if user is not None:
+        auth.login(requests, user)
+        return redirect('/')
+    else:
+        return render(requests, 'error.html', {'message': '用户名或密码错误'})
