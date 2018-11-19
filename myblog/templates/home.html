@@ -15,7 +15,64 @@
     <h1 class="home-content">欢迎访问我的博客</h1>
     <!-- 图表容器 DOM -->
     <div id="container"></div>
-    <!-- 引入 highcharts.js -->
+
+    <div class="hot-data">
+        <!-- 今天24小时内的热门博客 -->
+        <h3>今日热门博客</h3>
+        <ul>
+            {% for hot_data in today_hot_data %}
+                <li><a href="{% url 'blog_detail' hot_data.id %}">{{ hot_data.title }}</a>
+                    ({{ hot_data.read_num_sum }})
+                </li>
+            {% empty %}
+                <li>今日暂时没有热门博客</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="hot-data">
+        <!-- 昨日的热门博客 -->
+        <h3>昨日热门博客</h3>
+        <ul>
+            {% for hot_data in yesterday_hot_data %}
+                <li><a href="{% url 'blog_detail' hot_data.id %}">{{ hot_data.title }}</a>
+                    ({{ hot_data.read_num_sum }})
+                </li>
+            {% empty %}
+                <li>昨日暂时没有热门博客</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="hot-data">
+        <!-- 七日内的热门博客 -->
+        <h3>单周热门博客</h3>
+        <ul>
+            {% for hot_data in seven_days_hot_data %}
+                <li><a href="{% url 'blog_detail' hot_data.id %}">{{ hot_data.title }}</a>
+                    ({{ hot_data.read_num_sum }})
+                </li>
+            {% empty %}
+                <li>单周暂时没有热门博客</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="hot-data">
+        <!-- 七日内的热门博客 -->
+        <h3>单月热门博客</h3>
+        <ul>
+            {% for hot_data in one_month_hot_data %}
+                <li><a href="{% url 'blog_detail' hot_data.id %}">{{ hot_data.title }}</a>
+                    ({{ hot_data.read_num_sum }})
+                </li>
+            {% empty %}
+                <li>单月暂时没有热门博客</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# 表格操作 #}
+    {#    <!-- 引入 highcharts.js -->#}
     <script>
         // 图表配置
         let options = {
@@ -26,7 +83,11 @@
                 text: null // 标题
             },
             xAxis: {
-                categories: {{ dates|safe }}   // x 轴分类
+                categories: {{ dates|safe }}, // x 轴分类
+                tickmarkPlacement: 'on',
+                title: {
+                    text: '前7日阅读量'
+                }
             },
             yAxis: {
                 title: {
@@ -56,9 +117,7 @@
         // 图表初始化函数
         let chart = Highcharts.chart('container', options);
     </script>
-{% endblock %}
 
-{% block js %}
     {# 将首页这个按钮设置激活状态 #}
     <script>
         $(".nav-home").addClass("active").siblings().removeClass("active");

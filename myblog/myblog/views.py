@@ -4,7 +4,7 @@
 
 from django.shortcuts import render_to_response
 from django.contrib.contenttypes.models import ContentType
-from read_statistics.utils import get_seven_days_read_data
+from read_statistics.utils import get_seven_days_read_data, get_x_days_hot_data
 from blog.models import Blog
 
 
@@ -15,5 +15,9 @@ def home(requests):
     context = {
         'read_nums': read_nums,
         'dates': dates,
+        'today_hot_data': get_x_days_hot_data(0),  # 获取今日热门
+        'yesterday_hot_data': get_x_days_hot_data(1),  # 获取昨日热门
+        'seven_days_hot_data': get_x_days_hot_data(7),  # 获取周热门
+        'one_month_hot_data': get_x_days_hot_data(30),  # 获取月热门
     }
     return render_to_response('home.html', context)
