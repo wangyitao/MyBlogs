@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block title %}
+    我的博客|注册
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-xl-6 offset-xl-3">
+            <div class="card">
+                <h5 class="card-header">注册</h5>
+                <div class="card-body">
+                    <form action="{% url 'register' %}" method="post">
+                        {% csrf_token %}
+                        {% for field in reg_form %}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            <p class="text-danger">{{ field.errors.as_text }}</p>
+                        {% endfor %}
+                        <span class="text-danger float-left">{{ login_form.non_field_errors }}</span>
+                        <input type="submit" value="注册" class="btn btn-primary float-right">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# 将首页这个按钮设置激活状态 #}
+    <script>
+        $(".nav-home").addClass("active").siblings().removeClass("active");
+    </script>
+{% endblock %}

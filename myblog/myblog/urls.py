@@ -26,6 +26,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),  # 博客app路径
     path('comment/', include('comment.urls')),  # 博客app路径
     path('login/', views.login, name='login'),  # 登录
+    path('register/', views.register, name='register'),  # 登录
 ]
 
 # 设置ckeditor的上传
