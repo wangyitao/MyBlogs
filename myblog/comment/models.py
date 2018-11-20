@@ -14,3 +14,6 @@ class Comment(models.Model):
     text = models.TextField()
     comment_time = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        ordering = ['-comment_time']

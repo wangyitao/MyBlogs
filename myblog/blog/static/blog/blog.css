@@ -36,3 +36,12 @@ div.paginator {
 div.container {
     max-width: 80%;
 }
+
+div.comment-area{
+    margin-top: 2em;
+}
+
+h3.comment-area-title{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.4em;
+}

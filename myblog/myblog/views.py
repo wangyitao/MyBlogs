@@ -5,6 +5,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import auth
+from django.urls import reverse
 from read_statistics.utils import get_seven_days_read_data, get_x_days_hot_data
 from blog.models import Blog
 
@@ -28,8 +29,9 @@ def login(requests):
     username = requests.POST.get('username', '')
     password = requests.POST.get('password', '')
     user = auth.authenticate(requests, username=username, password=password)
+    referer = requests.META.get('HTTP_REFERER', reverse('home'))
     if user is not None:
         auth.login(requests, user)
-        return redirect('/')
+        return redirect(referer)
     else:
-        return render(requests, 'error.html', {'message': '用户名或密码错误'})
+        return render(requests, 'error.html', {'message': '用户名或密码错误', 'redirect_to': referer})
