@@ -155,3 +155,50 @@ CACHES = {
         'LOCATION': 'my_read_num_cache_table',
     }
 }
+
+# ckeditor 代码高亮,以及公式
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono',
+        'tabSpaces': 4,
+        'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML',
+        'toolbar': (
+            ['div', 'Source', '-', 'Save', 'NewPage', 'Preview', '-', 'Templates'],
+            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Print',
+             'SpellChecker', 'Scayt'],
+            ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat',
+             '-', 'Maximize', 'ShowBlocks', '-', "CodeSnippet", 'Mathjax', 'Subscript',
+             'Superscript'],
+            ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button',
+             'ImageButton', 'HiddenField'],
+            ['Bold', 'Italic', 'Underline', 'Strike', '-'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar',
+             'PageBreak'], ['Styles', 'Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],),
+        'extraPlugins': ','.join([
+            'codesnippet',
+            'mathjax',
+            'dialog',
+            'dialogui',
+            'lineutils',
+        ]),
+    },
+    'comment_ckeditor': {
+        'toolbar': 'custom',
+        'toolbar_custom': [
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+            ['TextColor', 'BGColor', 'RemoveFormat'],
+            ['NumberedList', 'BulletedList'],
+            ['Link', 'Unlink'],
+            ['Smiley', 'SpecialChar', 'Blockquote'],
+        ],
+        'width': 'auto',
+        'height': '180',
+        'tabSpace': 4,
+        'removePlugins': 'elementspath',
+        'resize_enabled': False,
+    }
+}
