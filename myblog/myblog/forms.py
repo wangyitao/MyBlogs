@@ -20,7 +20,7 @@ class LoginForm(forms.Form):
         user = auth.authenticate(username=username, password=password)
         if user is None:
             raise forms.ValidationError('用户名或密码错误')
-        self.cleaned_data.user = user  # 将验证过的user放入clean_data
+        self.cleaned_data['user'] = user  # 将验证过的user放入clean_data
         return self.cleaned_data
 
 

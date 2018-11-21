@@ -1,9 +1,14 @@
 {# 引用模板 #}
 {% extends 'base.html' %}
-
 {% load staticfiles %}
+
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+    {#  处理公式  #}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'
+            async></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 {% endblock %}
 
 
@@ -21,7 +26,7 @@
                     <h3>{{ blog.title }}</h3>
                     <li>作者：{{ blog.author }}</li>
                     {# 时间过滤器让时间按照自己需要的格式过滤 #}
-                    <li>发布日期：{{ blog.created_time|date:"Y-m-d H:n:s" }}</li>
+                    <li>发布日期：{{ blog.created_time|date:"Y-m-d H:i:s" }}</li>
                     <li>分类：
                         <a href="{% url 'blogs_with_type' blog.blog_type.pk %}">
                             {{ blog.blog_type }}
@@ -53,14 +58,14 @@
                 <div class="comment-area">
                     <h3 class="comment-area-title">提交评论</h3>
                     {% if user.is_authenticated %}
-                        <form action="{% url 'update_comment' %}" method="post" style="overflow: hidden">
+                        <form id="comment-form" action="{% url 'update_comment' %}" method="post"
+                              style="overflow: hidden">
                             {% csrf_token %}
-                            <div class="form-group">
-                                <label for="form-control">{{ user.username }},欢迎评论～</label>
-                                <textarea class="form-control" name="text" id="comment_text" rows="4"></textarea>
-                            </div>
-                            <input type="hidden" name="object_id" value="{{ blog.pk }}">
-                            <input type="hidden" name="content_type" value="blog">
+                            <label for="form-control">{{ user.username }},欢迎评论～</label>
+                            {% for field in comment_form %}
+                                {{ field }}
+                            {% endfor %}
+                            <span id="comment-error" class="text-danger float-left"></span>
                             <input type="submit" value="评论" class="btn btn-primary float-right">
                         </form>
                     {% else %}
@@ -73,15 +78,18 @@
                 </div>
                 <div class="-comment-area">
                     <h3 class="comment-area-title">评论列表</h3>
-                    {% for comment in comments %}
-                        <div>
-                            {{ comment.user.username }}
-                            {{ comment.comment_time|date:"Y-m-d H:n:s" }}
-                            {{ comment.text }}
-                        </div>
-                    {% empty %}
+                    <div id="comment-list">
+                        {% for comment in comments %}
+                            <div>
+                                {{ comment.user.username }}
+                                {{ comment.comment_time|date:"Y-m-d H:i:s" }}
+                                {{ comment.text|safe }}
+                            </div>
+                        {% empty %}
 
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -89,6 +97,50 @@
 {% endblock %}
 
 {% block js %}
+    <script>
+        $('#comment-form').submit(function () {
+            // 获取错误框
+            let comment_error = $('#comment-error');
+            comment_error.text('');
+
+            // 更新数据到textarea
+            CKEDITOR.instances['id_text'].updateElement();
+            let comment_text = CKEDITOR.instances['id_text'].document.getBody().getText().trim();
+            // 判断是否为空
+            if (!(CKEDITOR.instances['id_text'].document.getBody().find('img')['$'].length !== 0 || comment_text !== '')) {
+                // 显示错误信息
+                comment_error.text('评论内容不能为空');
+                return false;
+            }
+            //异步提交
+            $.ajax({
+                url: "{% url 'update_comment' %}",
+                type: 'POST',
+                data: $(this).serialize(),// 序列化表单值
+                cache: false, // 关闭缓存
+                success: function (data) {
+
+                    if (data['status'] === 'SUCCESS') {
+                        console.log(data);
+                        //  插入数据
+                        //  es6写法
+                        let comment_html = `<div>${data["username"]} (${data["comment_time"]}): ${data["text"]}</div>`;
+                        $('#comment-list').prepend(comment_html);
+                        //  清空编辑框的内容
+                        CKEDITOR.instances['id_text'].setData('');
+                    } else {
+                        // 显示错误信息
+                        comment_error.text(data['message'])
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
+            return false;
+        })
+    </script>
+
     <script>
         $(".nav-blog").addClass("active").siblings().removeClass("active");
     </script>

@@ -6,8 +6,8 @@ name = "pypi"
 [packages]
 django = "*"
 pymysql = "*"
-django-ckeditor = "*"
 pillow = "*"
+django-ckeditor = "*"
 
 [dev-packages]
 

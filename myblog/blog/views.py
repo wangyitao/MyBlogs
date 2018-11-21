@@ -6,6 +6,7 @@ from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
 from .models import Blog, BlogType
 from comment.models import Comment
+from comment.forms import CommentForm
 
 
 # 分页部分公共代码
@@ -84,6 +85,8 @@ def blog_detail(requests, blog_pk):
         'previous_blog': Blog.objects.filter(created_time__gt=blog.created_time).last(),
         'next_blog': Blog.objects.filter(created_time__lt=blog.created_time).first(),
         'comments': comments,  # 评论内容
+        # 给form表单设置初始化值
+        'comment_form': CommentForm(initial={'content_type': blog_content_type.model, 'object_id': blog_pk}),
     }
     response = render(requests, 'blog/blog_detail.html', context)
     response.set_cookie(obj_key, 'true')
