@@ -1,6 +1,7 @@
 {# 引用模板 #}
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load comment_tags %}
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
@@ -33,6 +34,7 @@
                         </a>
                     </li>
                     <li>阅读({{ blog.get_read_num }})</li>
+                    <li>评论({% get_comment_count blog %})</li>
                 </ul>
                 <p class="blog-content">{{ blog.content|safe }}</p>
 
@@ -63,12 +65,12 @@
                             {% csrf_token %}
                             <label for="form-control">{{ user.username }},欢迎评论～</label>
                             <div id="reply-content-container" style="display: none;">
-                                <p>回复：</p>
+                                <p id="reply_title">回复：</p>
                                 <div id="reply-content">
 
                                 </div>
                             </div>
-
+                            {% get_comment_form blog as comment_form %}
                             {% for field in comment_form %}
                                 {{ field }}
                             {% endfor %}
@@ -86,6 +88,7 @@
                 <div class="-comment-area">
                     <h3 class="comment-area-title">评论列表</h3>
                     <div id="comment-list">
+                        {% get_comment_list blog as comments %}
                         {% for comment in comments %}
                             <div id="root-{{ comment.pk }}" class="comment">
                                 <span>{{ comment.user.username }}</span>
@@ -107,7 +110,6 @@
                             <span id="no-comment">暂无评论</span>
                         {% endfor %}
                     </div>
-
                 </div>
             </div>
         </div>
@@ -116,6 +118,36 @@
 
 {% block js %}
     <script>
+        // 处理回复
+        function reply(reply_comment_id) {
+            $('#reply_comment_id').val(reply_comment_id);
+            let html = $('#comment-' + reply_comment_id).html();
+
+            $('#reply-content').html(html);
+            $('#reply-content-container').show();  // 显示内容
+
+
+            // 滚动富文本编辑器
+            $('html').animate({scrollTop: $('#comment-form').offset().top - 60}, 300, function () {
+                // 动画执行完毕后执行的方法
+                // 让富文本编辑器获得焦点
+                CKEDITOR.instances['id_text'].focus();
+            });
+        }
+        function numFormat(num) {
+            return ('00'+num).substr(-2);
+        }
+        function timeFormat(timestamp) {
+            let datetime =new Date(timestamp * 1000);
+            let year = datetime.getFullYear();
+            let month = numFormat(datetime.getMonth() + 1);
+            let day = numFormat(datetime.getDate());
+            let hour = numFormat(datetime.getHours());
+            let minute = numFormat(datetime.getMinutes());
+            let second = numFormat(datetime.getSeconds());
+            return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+        }
+
         // 提交评论
         $('#comment-form').submit(function () {
             // 获取错误框
@@ -148,7 +180,7 @@
                             // 插入评论
                             let comment_html = `<div id="root-${data["pk"]}" class="comment">
                                 <span>${data["username"]}</span>
-                                <span>${data["comment_time"]}</span>
+                                <span>${timeFormat(data["comment_time"])}</span>
                                 <div id="comment-${data["pk"]}">${data["text"]}</div>
                                 <a href="javascript:reply(${data["pk"]})">回复</a>
                             </div>`;
@@ -160,7 +192,7 @@
 
                             let reply_html = `<div class="reply">
                                         <span>${data["username"]}</span>
-                                        <span>${data["comment_time"]}</span>
+                                        <span>${timeFormat(data["comment_time"])}</span>
                                         <span>回复：</span><span>${data["reply_to"]}</span>
                                         <div id="comment-${data["pk"]}">${data["text"]}</div>
                                         <a href="javascript:reply(${data["pk"]})">回复</a>
@@ -174,6 +206,7 @@
                         $('#reply-content-container').hide(); // 回复完隐藏掉要回复的内容
                         reply_comment.val('0'); // 将回复标志重置0
                         $('#no-comment').remove(); // 如果有没回复标志，清除掉5
+                        comment_error.text('评论成功');
                     } else {
                         // 显示错误信息
                         comment_error.text(data['message'])
@@ -185,22 +218,6 @@
             });
             return false;
         });
-
-        // 处理回复
-        function reply(reply_comment_id) {
-            $('#reply_comment_id').val(reply_comment_id);
-            let html = $('#comment-' + reply_comment_id).html();
-
-            $('#reply-content').html(html);
-            $('#reply-content-container').show();  // 显示内容
-
-            // 滚动富文本编辑器
-            $('html').animate({scrollTop: $('#comment-form').offset().top - 60}, 300, function () {
-                // 动画执行完毕后执行的方法
-                // 让富文本编辑器获得焦点
-                CKEDITOR.instances['id_text'].focus();
-            });
-        }
     </script>
 
     <script>

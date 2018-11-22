@@ -21,7 +21,7 @@ def update_commit(requests):
         data = {
             'status': 'SUCCESS',
             'username': comment.user.username,
-            'comment_time': comment.comment_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'comment_time': comment.comment_time.timestamp(),  # 返回时间戳
             'text': comment.text.strip(),
             'reply_to': comment.reply_to.username if parent is not None else '',
             'pk': comment.pk,

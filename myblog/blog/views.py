@@ -1,12 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
 from .models import Blog, BlogType
-from comment.models import Comment
-from comment.forms import CommentForm
 
 
 # 分页部分公共代码
@@ -77,17 +74,10 @@ def blog_detail(requests, blog_pk):
     blog = get_object_or_404(Blog, pk=blog_pk)
     obj_key = read_statistics_once_read(requests, blog)
 
-    blog_content_type = ContentType.objects.get_for_model(blog)
-    comments = Comment.objects.filter(content_type=blog_content_type, object_id=blog.pk, parent=None)
-
     context = {
         'blog': blog,
         'previous_blog': Blog.objects.filter(created_time__gt=blog.created_time).last(),
         'next_blog': Blog.objects.filter(created_time__lt=blog.created_time).first(),
-        'comments': comments.order_by('-comment_time'),  # 评论内容
-        # 给form表单设置初始化值
-        'comment_form': CommentForm(
-            initial={'content_type': blog_content_type.model, 'object_id': blog_pk, 'reply_comment_id': 0}),
     }
     response = render(requests, 'blog/blog_detail.html', context)
     response.set_cookie(obj_key, 'true')
