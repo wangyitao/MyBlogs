@@ -62,6 +62,13 @@
                               style="overflow: hidden">
                             {% csrf_token %}
                             <label for="form-control">{{ user.username }},欢迎评论～</label>
+                            <div id="reply-content-container" style="display: none;">
+                                <p>回复：</p>
+                                <div id="reply-content">
+
+                                </div>
+                            </div>
+
                             {% for field in comment_form %}
                                 {{ field }}
                             {% endfor %}
@@ -80,13 +87,24 @@
                     <h3 class="comment-area-title">评论列表</h3>
                     <div id="comment-list">
                         {% for comment in comments %}
-                            <div>
-                                {{ comment.user.username }}
-                                {{ comment.comment_time|date:"Y-m-d H:i:s" }}
-                                {{ comment.text|safe }}
+                            <div id="root-{{ comment.pk }}" class="comment">
+                                <span>{{ comment.user.username }}</span>
+                                <span>{{ comment.comment_time|date:"Y-m-d H:i:s" }}</span>
+                                <div id="comment-{{ comment.pk }}">{{ comment.text|safe }}</div>
+                                <a href="javascript:reply({{ comment.pk }})">回复</a>
+
+                                {% for reply in comment.root_comment.all %}
+                                    <div class="reply">
+                                        <span>{{ reply.user.username }}</span>
+                                        <span>{{ reply.comment_time|date:"Y-m-d H:i:s" }}</span>
+                                        <span>回复：</span><span>{{ reply.reply_to.username }}</span>
+                                        <div id="comment-{{ reply.pk }}">{{ reply.text|safe }}</div>
+                                        <a href="javascript:reply({{ reply.pk }})">回复</a>
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% empty %}
-
+                            <span id="no-comment">暂无评论</span>
                         {% endfor %}
                     </div>
 
@@ -98,6 +116,7 @@
 
 {% block js %}
     <script>
+        // 提交评论
         $('#comment-form').submit(function () {
             // 获取错误框
             let comment_error = $('#comment-error');
@@ -119,15 +138,42 @@
                 data: $(this).serialize(),// 序列化表单值
                 cache: false, // 关闭缓存
                 success: function (data) {
-
+                    let reply_comment = $('#reply_comment_id');
                     if (data['status'] === 'SUCCESS') {
                         console.log(data);
                         //  插入数据
                         //  es6写法
-                        let comment_html = `<div>${data["username"]} (${data["comment_time"]}): ${data["text"]}</div>`;
-                        $('#comment-list').prepend(comment_html);
+
+                        if (reply_comment.val() === '0') {
+                            // 插入评论
+                            let comment_html = `<div id="root-${data["pk"]}" class="comment">
+                                <span>${data["username"]}</span>
+                                <span>${data["comment_time"]}</span>
+                                <div id="comment-${data["pk"]}">${data["text"]}</div>
+                                <a href="javascript:reply(${data["pk"]})">回复</a>
+                            </div>`;
+
+                            $('#comment-list').prepend(comment_html);
+
+                        } else {
+                            // 插入回复
+
+                            let reply_html = `<div class="reply">
+                                        <span>${data["username"]}</span>
+                                        <span>${data["comment_time"]}</span>
+                                        <span>回复：</span><span>${data["reply_to"]}</span>
+                                        <div id="comment-${data["pk"]}">${data["text"]}</div>
+                                        <a href="javascript:reply(${data["pk"]})">回复</a>
+                                    </div>`;
+                            $('#root-' + data['root_pk']).append(reply_html);
+
+                        }
+
                         //  清空编辑框的内容
                         CKEDITOR.instances['id_text'].setData('');
+                        $('#reply-content-container').hide(); // 回复完隐藏掉要回复的内容
+                        reply_comment.val('0'); // 将回复标志重置0
+                        $('#no-comment').remove(); // 如果有没回复标志，清除掉5
                     } else {
                         // 显示错误信息
                         comment_error.text(data['message'])
@@ -138,7 +184,23 @@
                 }
             });
             return false;
-        })
+        });
+
+        // 处理回复
+        function reply(reply_comment_id) {
+            $('#reply_comment_id').val(reply_comment_id);
+            let html = $('#comment-' + reply_comment_id).html();
+
+            $('#reply-content').html(html);
+            $('#reply-content-container').show();  // 显示内容
+
+            // 滚动富文本编辑器
+            $('html').animate({scrollTop: $('#comment-form').offset().top - 60}, 300, function () {
+                // 动画执行完毕后执行的方法
+                // 让富文本编辑器获得焦点
+                CKEDITOR.instances['id_text'].focus();
+            });
+        }
     </script>
 
     <script>
