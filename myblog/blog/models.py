@@ -19,9 +19,9 @@ class BlogType(models.Model):
 # 博客
 class Blog(models.Model, ReadNumExpandMethod):
     title = models.CharField(max_length=50)  # 博客标题
-    blog_type = models.ForeignKey(BlogType, on_delete=models.DO_NOTHING)  # 博客分类
+    blog_type = models.ForeignKey(BlogType, on_delete=models.CASCADE)  # 博客分类
     content = RichTextUploadingField()  # 博客内容，使用富文本编辑
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)  # 博客作者
+    author = models.ForeignKey(User, on_delete=models.CASCADE)  # 博客作者
     read_details = GenericRelation(ReadDetail)  # 关联到阅读表
     created_time = models.DateTimeField(auto_now_add=True)  # 博客创建时间
     last_updated_time = models.DateTimeField(auto_now=True)  # 博客更新事件
