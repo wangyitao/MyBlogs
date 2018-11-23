@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load comment_tags %}
+{% load likes_tags %}
 
 {# 标题 #}
 {% block title %}
@@ -39,7 +40,7 @@
                                         </span>
                                         <span>阅读({{ blog.get_read_num }})</span>
                                         <span>评论({% get_comment_count blog %})</span>
-
+                                        <span>点赞({% get_like_count blog %})</span>
                                     <p>
                                 </div>
                                 <p>{{ blog.content|safe|truncatechars:30 }}</p>

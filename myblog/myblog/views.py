@@ -28,6 +28,8 @@ def home(requests):
 
 
 def login(requests):
+    print(requests.POST)
+    print(requests.GET)
     # 如果是form表单提交验证登录
     if requests.method == 'POST':
         login_form = LoginForm(requests.POST)

@@ -74,3 +74,14 @@ p#reply_title{
     padding-bottom: 0.5em;
 }
 
+div.like{
+    color: #337ab7;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5em 0.2em;
+}
+
+div.like .active{
+    color: #f22;
+}
+

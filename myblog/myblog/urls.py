@@ -25,6 +25,7 @@ urlpatterns = [
     path('ckeditor', include('ckeditor_uploader.urls')),  # 配置上传url
     path('blog/', include('blog.urls')),  # 博客app路径
     path('comment/', include('comment.urls')),  # 博客app路径
+    path('likes/', include('likes.urls')),  # 博客app路径
     path('login/', views.login, name='login'),  # 登录
     path('register/', views.register, name='register'),  # 登录
 ]

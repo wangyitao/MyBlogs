@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',  # 将自己创建的app添加到设置中
     'read_statistics.apps.ReadStatisticsConfig',  # 注册阅读统计app
     'comment.apps.CommentConfig',  # 注册评论
+    'likes.apps.LikesConfig', # 注册点赞
 
 ]
 

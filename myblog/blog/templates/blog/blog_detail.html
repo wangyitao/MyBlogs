@@ -2,14 +2,18 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load comment_tags %}
+{% load likes_tags %}
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'blog/blog.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-5.5.0-web/css/all.min.css' %}">
+
     {#  处理公式  #}
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'
             async></script>
     <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
     <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
 {% endblock %}
 
 
@@ -36,8 +40,14 @@
                     <li>阅读({{ blog.get_read_num }})</li>
                     <li>评论({% get_comment_count blog %})</li>
                 </ul>
-                <p class="blog-content">{{ blog.content|safe }}</p>
+                <div class="blog-content">{{ blog.content|safe }}</div>
 
+                <div class="like"
+                     onclick="likeChange(this,'{% get_content_type blog %}',{{ blog.pk }})">
+                    <i class="far fa-thumbs-up {% get_like_status blog %}"></i>
+                    <span class="liked-num">{% get_like_count blog %}</span>
+                    <span>喜欢</span>
+                </div>
 
                 <p>上一篇：
                     {% if previous_blog %}
@@ -94,6 +104,13 @@
                                 <span>{{ comment.user.username }}</span>
                                 <span>{{ comment.comment_time|date:"Y-m-d H:i:s" }}</span>
                                 <div id="comment-{{ comment.pk }}">{{ comment.text|safe }}</div>
+                                {# 点赞 #}
+                                <div class="like"
+                                     onclick="likeChange(this,'{% get_content_type comment %}',{{ comment.pk }})">
+                                    <i class="far fa-thumbs-up {% get_like_status comment %}"></i>
+                                    <span class="liked-num">{% get_like_count comment %}</span>
+                                </div>
+
                                 <a href="javascript:reply({{ comment.pk }})">回复</a>
 
                                 {% for reply in comment.root_comment.all %}
@@ -102,6 +119,13 @@
                                         <span>{{ reply.comment_time|date:"Y-m-d H:i:s" }}</span>
                                         <span>回复：</span><span>{{ reply.reply_to.username }}</span>
                                         <div id="comment-{{ reply.pk }}">{{ reply.text|safe }}</div>
+                                        {# 点赞 #}
+                                        <div class="like"
+                                             onclick="likeChange(this,'{% get_content_type reply %}',{{ reply.pk }})">
+                                            <i class="far fa-thumbs-up {% get_like_status reply %}"></i>
+                                            <span class="liked-num">{% get_like_count reply %}</span>
+                                        </div>
+
                                         <a href="javascript:reply({{ reply.pk }})">回复</a>
                                     </div>
                                 {% endfor %}
@@ -118,6 +142,44 @@
 
 {% block js %}
     <script>
+        // 处理点赞
+        function likeChange(obj, content_type, object_id) {
+            let is_like = obj.getElementsByClassName('active').length === 0;
+
+
+            $.ajax({
+                url: "{% url 'like_change' %}",
+                type: 'GET',
+                data: {
+                    content_type: content_type,
+                    object_id: object_id,
+                    is_like: is_like,
+                },
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data['status'] === 'SUCCESS') {
+                        // 更新点赞状态
+                        let element = $(obj.getElementsByClassName('fa-thumbs-up'));
+                        if (is_like) {
+                            element.addClass('active');
+                        } else {
+                            element.removeClass('active');
+                        }
+                        // 更新点赞数量
+                        let like_num = $(obj.getElementsByClassName('liked-num'));
+                        like_num.text(data['liked_num']);
+
+                    } else {
+                        alert(data['msg']);
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
+        }
+
         // 处理回复
         function reply(reply_comment_id) {
             $('#reply_comment_id').val(reply_comment_id);
@@ -134,11 +196,13 @@
                 CKEDITOR.instances['id_text'].focus();
             });
         }
+
         function numFormat(num) {
-            return ('00'+num).substr(-2);
+            return ('00' + num).substr(-2);
         }
+
         function timeFormat(timestamp) {
-            let datetime =new Date(timestamp * 1000);
+            let datetime = new Date(timestamp * 1000);
             let year = datetime.getFullYear();
             let month = numFormat(datetime.getMonth() + 1);
             let day = numFormat(datetime.getDate());

@@ -12,7 +12,7 @@
             <div class="card">
                 <h5 class="card-header">登录</h5>
                 <div class="card-body">
-                    <form action="{% url 'login' %}" method="post">
+                    <form action="" method="post">
                         {% csrf_token %}
                         {% for field in login_form %}
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
