@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
 from .models import Blog, BlogType
+from myblog.forms import LoginForm
 
 
 # 分页部分公共代码
@@ -78,6 +79,7 @@ def blog_detail(requests, blog_pk):
         'blog': blog,
         'previous_blog': Blog.objects.filter(created_time__gt=blog.created_time).last(),
         'next_blog': Blog.objects.filter(created_time__lt=blog.created_time).first(),
+        'login_form': LoginForm(),
     }
     response = render(requests, 'blog/blog_detail.html', context)
     response.set_cookie(obj_key, 'true')

@@ -3,6 +3,7 @@
 # @Author  : Felix Wang
 
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -28,8 +29,6 @@ def home(requests):
 
 
 def login(requests):
-    print(requests.POST)
-    print(requests.GET)
     # 如果是form表单提交验证登录
     if requests.method == 'POST':
         login_form = LoginForm(requests.POST)
@@ -46,6 +45,25 @@ def login(requests):
         'login_form': login_form,
     }
     return render(requests, 'login.html', context)
+
+
+def login_for_model(requests):
+    login_form = LoginForm(requests.POST)
+
+    # 如果是form表单提交验证登录
+    if login_form.is_valid():  # 验证是否通过
+        # 因为在form表单验证过了，所以不用自己再验证
+        user = login_form.cleaned_data.get('user')
+        auth.login(requests, user)
+
+        data = {
+            'status': 'SUCCESS',
+        }
+    else:
+        data = {
+            'status': 'ERROR',
+        }
+    return JsonResponse(data)
 
 
 def register(requests):

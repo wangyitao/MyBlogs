@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.contrib.contenttypes.models import ContentType
 from .models import Comment
 from .forms import CommentForm
 
@@ -26,6 +27,7 @@ def update_commit(requests):
             'reply_to': comment.reply_to.username if parent is not None else '',
             'pk': comment.pk,
             'root_pk': comment.root.pk if comment.root is not None else '',
+            'content_type': ContentType.objects.get_for_model(comment).model,
         }
 
     else:
