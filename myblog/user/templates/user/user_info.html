@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    个人资料
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-xl-8 offset-xl-2">
+            <h2>{{ user.username }}</h2>
+            {% if user.is_authenticated %}
+                <ul>
+                    <li>昵称： <a href="">修改昵称</a></li>
+                    <li>
+                        邮箱：
+                        {% if user.email %}
+                            {{ user.email }}
+                        {% else %}
+                            未绑定 <a href="">绑定邮箱</a>
+                        {% endif %}
+                    </li>
+                    <li>上一次登录时间：{{ user.last_login|date:"Y-m-d H:i:s" }}</li>
+                    <li><a href="">修改密码</a></li>
+                </ul>
+            {% else %}
+                <script>
+                    window.location.href = '{% url 'home' %}'
+                </script>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# 将首页这个按钮设置激活状态 #}
+    <script>
+        $(".nav-home").addClass("active").siblings().removeClass("active");
+    </script>
+{% endblock %}
