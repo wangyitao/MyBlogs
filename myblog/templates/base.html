@@ -37,14 +37,85 @@
             <li class="nav-item nav-home"><a href="{% url 'home' %}" class="nav-link">首页</a></li>
             <li class="nav-item nav-blog"><a href="{% url 'blog_list' %}" class="nav-link">博客</a></li>
         </ul>
-    </div>
 
+        <ul class="navbar-nav">
+            {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a>
+                </li>
+            {% else %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'user_info' %}">个人资料</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}?from={{ request.get_full_path }}">登出</a>
+                    </div>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 </nav>
 
 {# 用来放内容 #}
 {% block content %}
 
 {% endblock %}
+
+<!-- Modal 登录模态框 -->
+<div class="modal fade" id="login_model" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="login_model_form" action="" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {% for field in login_model_form %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                    {% endfor %}
+                    <span id="login_model_tip" class="text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">登录</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $('#login_model_form').submit(function (event) {
+        $('#login_model_tip').text('');
+        event.preventDefault(); // 阻止原事件提交
+        $.ajax({
+            url: '{% url 'login_for_model' %}',
+            type: 'POST',
+            data: $(this).serialize(),
+            cache: false,
+            success: function (data) {
+                if (data['status'] === 'SUCCESS') {
+                    window.location.reload();
+                } else {
+                    $('#login_model_tip').text('用户名或密码不正确')
+                }
+            }
+        });
+    })
+</script>
 
 {# js代码放在后面可以增加性能 #}
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -57,7 +128,6 @@
 {% block js %}
 
 {% endblock %}
-
 
 </body>
 </html>
