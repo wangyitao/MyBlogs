@@ -7,21 +7,28 @@
 {% block content %}
     <div class="container">
         <div class="col-xl-6 offset-xl-3">
-            <div class="card">
-                <h5 class="card-header">登录</h5>
-                <div class="card-body">
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        {% for field in login_form %}
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field }}
-                            <p class="text-danger">{{ field.errors.as_text }}</p>
-                        {% endfor %}
-                        <span class="text-danger float-left">{{ login_form.non_field_errors }}</span>
-                        <input type="submit" value="登录" class="btn btn-primary float-right">
-                    </form>
+            {% if not user.is_authenticated %}
+                <div class="card">
+                    <h5 class="card-header">登录</h5>
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% for field in login_form %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                <p class="text-danger">{{ field.errors.as_text }}</p>
+                            {% endfor %}
+                            <span class="text-danger float-left">{{ login_form.non_field_errors }}</span>
+                            <input type="submit" value="登录" class="btn btn-primary float-right">
+                        </form>
+                    </div>
                 </div>
-            </div>
+                {# 未登录跳转到首页 #}
+            {% else %}
+                <script>
+                    window.location.href = '{% url 'home' %}'
+                </script>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

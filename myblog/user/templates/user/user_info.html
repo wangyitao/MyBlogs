@@ -23,6 +23,7 @@
                     <li><a href="">修改密码</a></li>
                 </ul>
             {% else %}
+                {# 未登录跳转到首页 #}
                 <script>
                     window.location.href = '{% url 'home' %}'
                 </script>
