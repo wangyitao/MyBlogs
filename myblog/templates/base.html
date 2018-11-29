@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="{% static 'bootstrap4.1/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
+    {# js代码放在后面可以增加性能 #}
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap4.1/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap4.1/bootstrap.min.js' %}"></script>
+
     {% block header_extends %}
         {#    用来做头部扩展，如加载某些静态文件     #}
     {% endblock %}
@@ -52,6 +58,9 @@
                        data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
                         {{ user.username }}
+                        {% if user.has_nickname %}
+                            ({{ user.get_nickname }})
+                        {% endif %}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'user_info' %}">个人资料</a>
@@ -119,12 +128,6 @@
         });
     })
 </script>
-
-{# js代码放在后面可以增加性能 #}
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'bootstrap4.1/popper.min.js' %}"></script>
-<script src="{% static 'bootstrap4.1/bootstrap.min.js' %}"></script>
 
 {# 导入资源建议放在js代码前 #}
 {# 用来放js代码 #}

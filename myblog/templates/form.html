@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-xl-6 offset-xl-3">
+            <div class="card">
+                <h5 class="card-header">{{ form_title }}</h5>
+                <div class="card-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if not field.is_hidden %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% endif %}
+                            {{ field }}
+                            <p class="text-danger">{{ field.errors.as_text }}</p>
+                        {% endfor %}
+                        <span id="error-tip" class="text-danger">{{ form.non_field_errors }}</span>
+                        <div class="clearfix"></div>
+                        <div class="float-left">
+                            {% block other-buttons %}{% endblock %}
+                        </div>
+                        <div class="float-right">
+                            <input type="submit" value="{{ submit_text }}" class="btn btn-primary">
+                            <button class="btn" onclick="window.location.href='{{ return_back_url }}'">返回</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# 将首页这个按钮设置激活状态 #}
+    <script>
+        $(".nav-home").addClass("active").siblings().removeClass("active");
+    </script>
+{% endblock %}
