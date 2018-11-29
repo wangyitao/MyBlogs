@@ -21,10 +21,10 @@ def update_commit(requests):
         # 返回数据
         data = {
             'status': 'SUCCESS',
-            'username': comment.user.username,
+            'username': comment.user.get_nickname_or_username(),
             'comment_time': comment.comment_time.timestamp(),  # 返回时间戳
             'text': comment.text.strip(),
-            'reply_to': comment.reply_to.username if parent is not None else '',
+            'reply_to': comment.reply_to.get_nickname_or_username() if parent is not None else '',
             'pk': comment.pk,
             'root_pk': comment.root.pk if comment.root is not None else '',
             'content_type': ContentType.objects.get_for_model(comment).model,
