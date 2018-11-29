@@ -18,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'nickname', 'email', 'is_staff', 'is_active', 'is_superuser')
 
     def nickname(self, obj):
-        return obj.profile.nikename
+        return obj.profile.nickname
 
     nickname.short_description = '昵称'  # 后台字段
 
@@ -30,4 +30,4 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'nikename')
+    list_display = ('user', 'nickname')
