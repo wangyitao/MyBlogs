@@ -64,6 +64,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'user_info' %}">个人资料</a>
+                        <a class="dropdown-item" href="{% url 'change_password' %}">修改密码</a>
+
                         {% if user.is_staff or user.is_superuser %}
                             <a class="dropdown-item" href="{% url 'admin:index' %}">后台管理</a>
                         {% endif %}
