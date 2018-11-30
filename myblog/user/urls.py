@@ -14,4 +14,6 @@ urlpatterns = [
     path('change_nickname/', views.change_nickname, name='change_nickname'),  # 更改昵称
     path('bind_email/', views.bind_email, name='bind_email'),  # 更改昵称
     path('send_verification_code/', views.send_verification_code, name='send_verification_code'),  # 更改昵称
+    path('change_password/', views.change_password, name='change_password'),  # 更改密码
+    path('forgot_password/', views.forgot_password, name='forgot_password'),  # 更改密码
 ]

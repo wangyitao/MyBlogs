@@ -10,7 +10,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.conf import settings
-from .forms import LoginForm, RegisterForm, ChangeNicknameForm, BindEmailForm
+from .forms import LoginForm, RegisterForm, ForgotPasswordForm, ChangeNicknameForm, BindEmailForm, ChangePasswordForm
 from .models import Profile
 from myblog.utils import AutoSendEmail
 
@@ -55,7 +55,8 @@ def login_for_model(requests):
 
 def register(requests):
     if requests.method == 'POST':
-        reg_form = RegisterForm(requests.POST)
+        reg_form = RegisterForm(requests.POST, requests=requests)
+
         if reg_form.is_valid():
             username = reg_form.cleaned_data['username']
             email = reg_form.cleaned_data['email']
@@ -68,6 +69,10 @@ def register(requests):
             # 登录用户
             user = auth.authenticate(username=username, password=password)
             auth.login(requests, user)
+
+            # 注册成功否删除保存的验证码
+            del requests.session['register_code']
+
             # 登录之后跳转
             return redirect(requests.GET.get('from', reverse('home')))
     else:
@@ -123,6 +128,9 @@ def bind_email(requests):
             email = form.cleaned_data['email']
             requests.user.email = email
             requests.user.save()
+
+            # 绑定成功后删除验证码
+            del requests.session['bind_email_code']
             return redirect(redirect_to)
     else:
         form = BindEmailForm()
@@ -140,6 +148,8 @@ def bind_email(requests):
 
 def send_verification_code(requests):
     email = requests.GET.get('email', '')
+    send_for = requests.GET.get('send_for', '')
+
     if re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
         # 生成验证码
         all_codes = list(range(0x30, 0x39)) + list(range(0x61, 0x74)) + list(range(0x41, 0x5a))  # 大写，小写和数字
@@ -151,7 +161,7 @@ def send_verification_code(requests):
                 'status': 'ERROR',
             }
         else:
-            requests.session['bind_email_code'] = code
+            requests.session[send_for] = code
             requests.session['send_code_time'] = send_code_time
             title = '验证码'
             auto_email = AutoSendEmail(sender=settings.EMAIL_HOST_USER, recever=[email],
@@ -182,6 +192,7 @@ def send_verification_code(requests):
                     'msg': '邮件发送成功',
                 }
             except Exception as e:
+                print(str(e))
                 data = {
                     'status': 'ERRORS',
                     'msg': '邮件发送失败',
@@ -193,3 +204,59 @@ def send_verification_code(requests):
         }
 
     return JsonResponse(data)
+
+
+def change_password(requests):
+    redirect_to = reverse('home')
+
+    if requests.method == 'POST':
+        form = ChangePasswordForm(requests.POST, user=requests.user)
+        if form.is_valid():
+            new_password = form.cleaned_data['new_password']
+            profile, created = Profile.objects.get_or_create(user=requests.user)
+            profile.user.set_password(new_password)
+            profile.user.save()
+            # 密码修改成功后登出
+            auth.logout(requests)
+            return redirect(redirect_to)
+    else:
+        form = ChangePasswordForm()
+
+    context = {
+        'submit_text': '修改',
+        'page_title': '修改密码',
+        'form_title': '修改密码',
+        'form': form,
+        'return_back_url': redirect_to,
+
+    }
+    return render(requests, 'form.html', context)
+
+
+def forgot_password(requests):
+    redirect_to = reverse('login')
+
+    if requests.method == 'POST':
+        form = ForgotPasswordForm(requests.POST, requests=requests)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.get(email=email)
+            user.set_password(new_password)
+            user.save()
+
+            # 绑定成功后删除验证码
+            del requests.session['forgot_password_code']
+            return redirect(redirect_to)
+    else:
+        form = ForgotPasswordForm()
+
+    context = {
+        'submit_text': '重置密码',
+        'page_title': '重置密码',
+        'form_title': '重置',
+        'form': form,
+        'return_back_url': redirect_to,
+
+    }
+    return render(requests, 'user/forgot_password.html', context)
