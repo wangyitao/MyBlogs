@@ -21,7 +21,7 @@
                         {% endif %}
                     </li>
                     <li>上一次登录时间：{{ user.last_login|date:"Y-m-d H:i:s" }}</li>
-                    <li><a href="">修改密码</a></li>
+                    <li><a href="{% url 'change_password' %}">修改密码</a></li>
                 </ul>
             {% else %}
                 {# 未登录跳转到首页 #}
