@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -25,6 +26,12 @@ class Blog(models.Model, ReadNumExpandMethod):
     read_details = GenericRelation(ReadDetail)  # 关联到阅读表
     created_time = models.DateTimeField(auto_now_add=True)  # 博客创建时间
     last_updated_time = models.DateTimeField(auto_now=True)  # 博客更新事件
+
+    def get_url(self):  # 获取博客的url路径
+        return reverse('blog_detail', kwargs={'blog_pk': self.pk})
+
+    def get_email(self):  # 获取博客作者的邮箱
+        return self.author.email
 
     def __str__(self):  # 显示标题名
         return "<Blog:{}>".format(self.title)
