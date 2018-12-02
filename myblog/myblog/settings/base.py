@@ -13,18 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ea+kzo_5k^6r7micfg@lar1(rfdc08@b4*+w5d11=0mp1p5ngr'
-
-# SECURITY WARNING: don't run with debug turned on in production!2.
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -78,23 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myblog.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'myblogs',  # 要连接的数据库，连接前需要创建好
-        'USER': 'root',  # 连接数据库的用户名
-        'PASSWORD': 'felixwang',  # 连接数据库的密码
-        'HOST': '127.0.0.1',  # 连接主机，默认本级
-        'PORT': 3306  # 端口 默认3306
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -130,7 +104,7 @@ USE_I18N = True
 USE_L10N = True
 
 # 不考虑时区
-USE_TZ = False
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -204,10 +178,3 @@ CKEDITOR_CONFIGS = {
         'resize_enabled': False,
     }
 }
-
-# 发送邮箱设置
-MAIL_HOST = 'smtp.qq.com'  # smtp服务地址
-EMAIL_PORT = 465  # 端口号
-EMAIL_HOST_USER = '1403179190@qq.com'  # qq邮箱
-EMAIL_HOST_PASSWORD = 'jqvhqqvpxppifiec'  # 如果是qq邮箱的话该密码是配置qq邮箱的SMTP功能的授权码
-FROM_WHO = 'FCBlog'  # 前缀

@@ -8,13 +8,15 @@
     <title>评论提醒</title>
 </head>
 <body>
-
-<p>评论或回复内容：<br>
-    {{ comment_text|safe }}
-    <br>
-    博客链接：
-    <br>
-    <a href="{{ url }}">点击查看</a>
-</p>
+{# 设置标签不转义 #}
+{% autoescape off %}
+    <p>评论或回复内容：<br>
+        {{ comment_text }}
+        <br>
+        博客链接：
+        <br>
+        <a href="{{ url }}">点击查看</a>
+    </p>
+{% endautoescape %}
 </body>
 </html>
