@@ -28,3 +28,37 @@ EMAIL_PORT = 465  # 端口号
 EMAIL_HOST_USER = '1403179190@qq.com'  # qq邮箱
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']  # 如果是qq邮箱的话该密码是配置qq邮箱的SMTP功能的授权码
 FROM_WHO = 'FCBlog'  # 前缀
+
+ADMINS = [  # 配置管理员，出错发送给管理员
+    ('felix', 'felix@example.com'),
+]
+
+LOGGING_FILE_PATH = os.environ['LOGGING_FILE_PATH']  # 配置日志文件位置
+# 日志文件
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOGGING_FILE_PATH,
+        },
+        'mail_admins': {  # 出错发送邮件给管理员
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
