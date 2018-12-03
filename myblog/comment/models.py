@@ -17,33 +17,14 @@ class SendEmail(threading.Thread):
         super().__init__()
 
     def run(self):
-
         from django.core.mail import EmailMultiAlternatives
         text_content = 'This is an important message.'
-        subject, from_email, to = 'hello', settings.EMAIL_HOST_USER, self.email
+        subject, from_email, to = self.title, settings.FROM_EMAIL, self.email
         html_content = render_to_string('comment/send_mail.html',
                                         {'comment_text': self.comment_content, 'url': self.blog_url})
-        print(html_content)
-        msg = EmailMultiAlternatives(subject,text_content, from_email, [to])
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, "text/html")
-        succeed=msg.send()
-        print('#####')
-        print(succeed)
-
-
-        # auto_email = AutoSendEmail(sender=settings.EMAIL_HOST_USER, recever=[self.email],
-        #                            password=settings.EMAIL_HOST_PASSWORD, title=self.title,
-        #                            from_who=settings.FROM_WHO,
-        #                            smtp_server=settings.MAIL_HOST, port=settings.EMAIL_PORT)
-        #
-        # html = render_to_string('comment/send_mail.html', {'comment_text': self.comment_content, 'url': self.blog_url})
-        # # 以html的形式发送文字，推荐这个，因为可以添加图片等
-        # auto_email.addHtml(html)
-        # # 发送邮件
-        # try:
-        #     auto_email.sendEmail()
-        # except Exception as e:
-        #     print(str(e))
+        msg.send()
 
 
 class Comment(models.Model):
