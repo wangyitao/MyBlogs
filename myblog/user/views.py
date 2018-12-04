@@ -10,9 +10,9 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from .forms import LoginForm, RegisterForm, ForgotPasswordForm, ChangeNicknameForm, BindEmailForm, ChangePasswordForm
 from .models import Profile
-from myblog.utils import AutoSendEmail
 
 
 def login(requests):
@@ -163,11 +163,11 @@ def send_verification_code(requests):
         else:
             requests.session[send_for] = code
             requests.session['send_code_time'] = send_code_time
+
             title = '验证码'
-            auto_email = AutoSendEmail(sender=settings.EMAIL_HOST_USER, recever=[email],
-                                       password=settings.EMAIL_HOST_PASSWORD, title=title, from_who=settings.FROM_WHO,
-                                       smtp_server=settings.MAIL_HOST, port=settings.EMAIL_PORT)
-            html = """
+            text_content = '绑定邮箱'
+            subject, from_email, to = title, settings.FROM_EMAIL, email
+            html_content = """
                         <html>
                           <head></head>
                           <body>
@@ -181,22 +181,13 @@ def send_verification_code(requests):
                           </body>
                         </html>
                         """.format(code)
-
-            # 以html的形式发送文字，推荐这个，因为可以添加图片等
-            auto_email.addHtml(html)
-            # 发送邮件
-            try:
-                auto_email.sendEmail()
-                data = {
-                    'status': 'SUCCESS',
-                    'msg': '邮件发送成功',
-                }
-            except Exception as e:
-                print(str(e))
-                data = {
-                    'status': 'ERRORS',
-                    'msg': '邮件发送失败',
-                }
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            data = {
+                'status': 'SUCCESS',
+                'msg': '邮件发送成功',
+            }
     else:
         data = {
             'status': 'ERRORS',

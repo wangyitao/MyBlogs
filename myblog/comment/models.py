@@ -5,7 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.template.loader import render_to_string
-from myblog.utils import AutoSendEmail
+from django.core.mail import EmailMultiAlternatives
 
 
 class SendEmail(threading.Thread):
@@ -17,8 +17,7 @@ class SendEmail(threading.Thread):
         super().__init__()
 
     def run(self):
-        from django.core.mail import EmailMultiAlternatives
-        text_content = 'This is an important message.'
+        text_content = '评论或回复内容'
         subject, from_email, to = self.title, settings.FROM_EMAIL, self.email
         html_content = render_to_string('comment/send_mail.html',
                                         {'comment_text': self.comment_content, 'url': self.blog_url})
