@@ -1,3 +1,7 @@
+# 自己项目的
+static_collected/
+
+
 # python的
 # Byte-compiled / optimized / DLL files
 __pycache__/
