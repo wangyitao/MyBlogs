@@ -21,15 +21,6 @@ DATABASES = {
         'PORT': 3306  # 端口 默认3306
     }
 }
-# 发送邮箱设置
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# MAIL_HOST = 'smtp.qq.com'  # smtp服务地址
-# EMAIL_PORT = 465  # 端口号
-# EMAIL_HOST_USER = '1403179190@qq.com'  # qq邮箱
-# EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']  # 如果是qq邮箱的话该密码是配置qq邮箱的SMTP功能的授权码
-# EMAIL_SUBJECT_PREFIX = 'FCBlog'
-# EMAIL_USE_SSL = True  # 与SMTP服务器通信时，是否启动SSL安全连接
-# FROM_WHO = 'FCBlog'  # 前缀
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -37,7 +28,7 @@ EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = '1403179190@qq.com'
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']  # 授权码
-EMAIL_SUBJECT_PREFIX = u'[杨仕航的博客]'
+EMAIL_SUBJECT_PREFIX = u'[FCBlog]'
 EMAIL_USE_SSL = True  # 与SMTP服务器通信时，是否启动TLS链接(安全链接)
 EMAIL_TIMEOUT = 60
 FROM_EMAIL = 'FCBlog<1403179190@qq.com>'
