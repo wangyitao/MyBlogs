@@ -86,7 +86,8 @@ def register(requests):
 
 def logout(requests):
     auth.logout(requests)
-    return redirect(requests.GET.get('from', reverse('home')))
+    to = reverse('home')  # 登出，跳转到首页
+    return redirect(to)
 
 
 def user_info(requests):
