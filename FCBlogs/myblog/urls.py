@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),  # 主页路径
+    path('', views.Home.as_view(), name='home'),  # 主页路径
     path('admin/', admin.site.urls),
     path('ckeditor', include('ckeditor_uploader.urls')),  # 配置上传url
     path('blog/', include('blog.urls')),  # 博客app路径

@@ -6,5 +6,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('update_comment',views.update_commit,name='update_comment')
+    path('update_comment', views.UpdateCommit.as_view(), name='update_comment')
 ]
