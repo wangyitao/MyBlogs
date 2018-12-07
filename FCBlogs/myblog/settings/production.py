@@ -66,3 +66,16 @@ LOGGING = {
         },
     },
 }
+
+# 配置django的session引擎改成redis
+SESSION_ENGINE = 'redis_sessions.session'
+# redis服务器地址
+SESSION_REDIS_HOST = 'localhost'
+# redis端口
+SESSION_REDIS_PORT = 6379
+# 选择那个redis库
+SESSION_REDIS_DB = 2
+# 密码
+SESSION_REDIS_PASSWORD = ''
+# 前缀的键名
+SESSION_REDIS_PREFIX = 'myblogs_django_session'
