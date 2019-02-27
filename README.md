@@ -44,7 +44,6 @@ export EMAIL_HOST_PASSWORD=""  # 写入自己的qq邮箱的key
 export LOGGING_FILE_PATH="" # 写入自己的日志存放目录绝对路径 比如我的/home/myblogs_log/mylog.log
 a、django的SECRET_KEY重新生成方式如下：
 
-复制代码
 (MyBlogs) [root@localhost MyBlogs]# django-admin shell
 Python 3.7.2 (default, Jan  3 2019, 16:25:55) 
 [GCC 4.8.5 20150623 (Red Hat 4.8.5-36)] on linux
@@ -54,7 +53,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> utils.get_random_secret_key()
 'yqk27s&bi(11te&8dgl=-r1&638re&)3bj=ozzb1h+72p-ra53'
 >>> 
-复制代码
+
 b、EMAIL_HOST_PASSWORD 可以从qq邮箱官网获取
 
 7、配置好之后生成表结构
@@ -70,7 +69,6 @@ python3 manage.py collectstatic # 收集静态资源
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p "密码" mysql
 10、第一阶段测试
 
-复制代码
 [root@localhost MyBlogs]# pipenv run python3 FCBlogs/manage.py runserver 0.0.0.0:80
 Performing system checks...
 
@@ -79,7 +77,7 @@ January 04, 2019 - 22:30:52
 Django version 2.1.4, using settings 'myblog.settings.development'
 Starting development server at http://0.0.0.0:80/
 Quit the server with CONTROL-C.
-复制代码
+
 然后使用ip访问如果成功就表示第一阶段配置完成。
 
  11、安装uwsgi
@@ -89,7 +87,6 @@ pip3 install uwsgi
 
 新建一个uwsgi.ini文件，内容如下
 
-复制代码
 [uwsgi]
 chdir=/root/myblogs/MyBlogs/FCBlogs  
 home=/root/.local/share/virtualenvs/MyBlogs-7hihB8Gz/ 
@@ -105,15 +102,11 @@ uid=1000
 pid=2000
 daemonize=/root/myblogs/MyBlogs/myblogs_uwsgi/myblogs.log
 pidfile=/root/myblogs/MyBlogs/myblogs_uwsgi/master.pid
-复制代码
- uwsgi参数详解
 
- uwsgi参数详解
 13、配置nginx参数
 
 配置文件如下，nginx.conf
 
-复制代码
 user  root;
 worker_processes  1;
 
@@ -210,7 +203,7 @@ http {
     #}
 
 }
-复制代码
+
 14、启动redis
 
 redis-server
